@@ -1,6 +1,6 @@
 # Приложение ExploreWithMe (англ. «исследуй со мной»)
 
-[Ссылка на pull request]()
+[Ссылка на pull request](https://github.com/Ekaterina-Filaretova/java-explore-with-me/pull/1)
 
 ## Описание
 
