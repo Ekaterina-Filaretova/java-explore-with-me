@@ -1,7 +1,9 @@
 package ru.practicum.events.specifications;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import ru.practicum.events.Event;
 import ru.practicum.events.EventState;
 import ru.practicum.events.specifications.model.AdminEventRequest;
@@ -15,10 +17,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminEventSpecifications implements Specification<Event> {
 
-    private final AdminEventRequest request;
+    private AdminEventRequest request;
 
     @Override
     public Predicate toPredicate(Root<Event> root, CriteriaQuery<?> query, CriteriaBuilder builder) {

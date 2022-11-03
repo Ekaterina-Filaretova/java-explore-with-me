@@ -30,6 +30,7 @@ public class ParticipationRequest {
     private User requester;
     @Column(name = "created_on")
     private LocalDateTime created;
+    @Column(length = 50)
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
 

@@ -1,7 +1,9 @@
 package ru.practicum.hits.specifications;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import ru.practicum.hits.EndpointHit;
 import ru.practicum.hits.specifications.model.ViewStatsRequest;
 
@@ -14,10 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class ViewStatsSpecifications implements Specification<EndpointHit> {
 
-    private final ViewStatsRequest request;
+    private ViewStatsRequest request;
 
     @Override
     public Predicate toPredicate(Root<EndpointHit> root, CriteriaQuery<?> query, CriteriaBuilder builder) {

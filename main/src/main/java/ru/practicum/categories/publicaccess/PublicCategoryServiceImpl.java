@@ -1,5 +1,6 @@
 package ru.practicum.categories.publicaccess;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +16,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class PublicCategoryServiceImpl implements PublicCategoryService {
 
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
-
-    public PublicCategoryServiceImpl(CategoryMapper categoryMapper,
-                                     CategoryRepository categoryRepository) {
-        this.categoryMapper = categoryMapper;
-        this.categoryRepository = categoryRepository;
-    }
 
     @Override
     public List<CategoryDto> getAllCategories(Integer from, Integer size) {

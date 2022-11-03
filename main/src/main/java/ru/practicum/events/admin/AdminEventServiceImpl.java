@@ -22,6 +22,7 @@ import ru.practicum.exceptions.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -44,34 +45,18 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto updateEvent(Long eventId, NewEventDto eventDto) {
         Event event = getById(eventId);
-        if (eventDto.getAnnotation() != null) {
-            event.setAnnotation(eventDto.getAnnotation());
-        }
-        if (eventDto.getCategory() != null) {
-            CategoryDto categoryDto = categoryService.getCategoryById(eventDto.getCategory());
+        Optional.ofNullable(eventDto.getAnnotation()).ifPresent(event::setAnnotation);
+        Optional.ofNullable(eventDto.getCategory()).ifPresent(id -> {
+            CategoryDto categoryDto = categoryService.getCategoryById(id);
             event.setCategory(categoryMapper.convertToEntity(categoryDto));
-        }
-        if (eventDto.getDescription() != null) {
-            event.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getEventDate() != null) {
-            event.setEventDate(parseString(eventDto.getEventDate()));
-        }
-        if (eventDto.getPaid() != null) {
-            event.setPaid(eventDto.getPaid());
-        }
-        if (eventDto.getParticipantLimit() != 0) {
-            event.setParticipantLimit(eventDto.getParticipantLimit());
-        }
-        if (eventDto.getTitle() != null) {
-            event.setTitle(eventDto.getTitle());
-        }
-        if (eventDto.getLocation() != null) {
-            event.setLocation(eventDto.getLocation());
-        }
-        if (eventDto.getRequestModeration() != null) {
-            event.setRequestModeration(eventDto.getRequestModeration());
-        }
+        });
+        Optional.ofNullable(eventDto.getDescription()).ifPresent(event::setDescription);
+        Optional.ofNullable(eventDto.getEventDate()).ifPresent(date -> event.setEventDate(parseString(date)));
+        Optional.ofNullable(eventDto.getPaid()).ifPresent(event::setPaid);
+        Optional.of(eventDto.getParticipantLimit()).ifPresent(event::setParticipantLimit);
+        Optional.ofNullable(eventDto.getTitle()).ifPresent(event::setTitle);
+        Optional.ofNullable(eventDto.getLocation()).ifPresent(event::setLocation);
+        Optional.ofNullable(eventDto.getRequestModeration()).ifPresent(event::setRequestModeration);
         log.info("Событие обновлено {}", event);
         return eventMapper.convertToDto(event);
     }
@@ -80,10 +65,13 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto publishEvent(Long eventId) {
         Event event = getById(eventId);
+        if (event.getEventDate() == null) {
+            throw new ValidationException("У события отсутствует дата проведения");
+        }
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             throw new ValidationException("Дата начала события должна быть не ранее чем за час от даты публикации");
         }
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (event.getState() != EventState.PENDING) {
             throw new ValidationException("Событие должно быть в состоянии ожидания публикации");
         }
         event.setPublishedOn(LocalDateTime.now());
@@ -96,7 +84,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto rejectEvent(Long eventId) {
         Event event = getById(eventId);
-        if (event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState() == EventState.PUBLISHED) {
             throw new ValidationException("Событие не должно быть со статусом опубликовано");
         }
         event.setState(EventState.CANCELED);

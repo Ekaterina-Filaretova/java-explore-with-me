@@ -102,7 +102,7 @@ public class PrivateParticipationRequestServiceImpl implements PrivateParticipat
         if (event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Нельзя добавить заявку на свое событие");
         }
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState() != EventState.PUBLISHED) {
             throw new ValidationException("Событие ещё не опубликовано");
         }
         if (event.getConfirmedRequests() == event.getParticipantLimit()) {

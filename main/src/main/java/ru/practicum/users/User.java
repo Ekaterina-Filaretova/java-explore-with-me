@@ -19,7 +19,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+    @Column(length = 100)
     private String name;
+    @Column(length = 50, unique = true)
     private String email;
 
     @Override

@@ -30,6 +30,7 @@ import ru.practicum.users.User;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -58,31 +59,19 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public EventFullDto updateEvent(Long userId, NewEventDto eventDto) {
         Event event = getEventById(eventDto.getEventId());
         checkUpdatedEvent(userId, event, eventDto.getEventDate());
-        if (event.getState().equals(EventState.CANCELED)) {
+        if (event.getState() == EventState.CANCELED) {
             event.setState(EventState.PENDING);
         }
-        if (eventDto.getAnnotation() != null) {
-            event.setAnnotation(eventDto.getAnnotation());
-        }
-        if (eventDto.getCategory() != null) {
-            Category category = categoryService.getCategoryById(eventDto.getCategory());
+        Optional.ofNullable(eventDto.getAnnotation()).ifPresent(event::setAnnotation);
+        Optional.ofNullable(eventDto.getCategory()).ifPresent(id -> {
+            Category category = categoryService.getCategoryById(id);
             event.setCategory(category);
-        }
-        if (eventDto.getDescription() != null) {
-            event.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getEventDate() != null) {
-            event.setEventDate(parseString(eventDto.getEventDate()));
-        }
-        if (eventDto.getPaid() != null) {
-            event.setPaid(eventDto.getPaid());
-        }
-        if (eventDto.getParticipantLimit() != 0) {
-            event.setParticipantLimit(eventDto.getParticipantLimit());
-        }
-        if (eventDto.getTitle() != null) {
-            event.setTitle(eventDto.getTitle());
-        }
+        });
+        Optional.ofNullable(eventDto.getDescription()).ifPresent(event::setDescription);
+        Optional.ofNullable(eventDto.getEventDate()).ifPresent(date -> event.setEventDate(parseString(date)));
+        Optional.ofNullable(eventDto.getPaid()).ifPresent(event::setPaid);
+        Optional.of(eventDto.getParticipantLimit()).ifPresent(event::setParticipantLimit);
+        Optional.ofNullable(eventDto.getTitle()).ifPresent(event::setTitle);
         log.info("Событие обновлено {}", event);
         return eventMapper.convertToDto(event);
     }
@@ -115,11 +104,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public EventFullDto cancelEvent(Long userId, Long eventId) {
         Event event = getEventById(eventId);
         checkInitiator(userId, event);
-        switch (event.getState()) {
-            case CANCELED:
-                throw new ValidationException("Событие уже отменено");
-            case PUBLISHED:
-                throw new ValidationException("Событие уже опубликовано");
+        if (event.getState() == EventState.CANCELED) {
+            throw new ValidationException("Событие уже отменено");
+        } else if (event.getState() == EventState.PUBLISHED) {
+            throw new ValidationException("Событие уже опубликовано");
         }
         event.setState(EventState.CANCELED);
         log.info("Событие отменено {}", event);
@@ -192,7 +180,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     private void checkUpdatedEvent(Long userId, Event event, String date) {
         checkInitiator(userId, event);
-        if (event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState() == EventState.PUBLISHED) {
             throw new ValidationException("Событие уже опубликовано");
         }
         checkEventDate(date);

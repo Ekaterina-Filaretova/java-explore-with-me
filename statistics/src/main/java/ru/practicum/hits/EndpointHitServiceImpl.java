@@ -2,7 +2,6 @@ package ru.practicum.hits;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import one.util.streamex.StreamEx;
 import org.springframework.stereotype.Service;
 import ru.practicum.hits.dto.EndpointHitDto;
 import ru.practicum.hits.dto.ViewStatsDto;
@@ -10,6 +9,11 @@ import ru.practicum.hits.specifications.ViewStatsSpecifications;
 import ru.practicum.hits.specifications.model.ViewStatsRequest;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -31,9 +35,9 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     public List<ViewStatsDto> getStats(ViewStatsRequest request) {
         List<EndpointHit> hits = hitRepository.findAll(new ViewStatsSpecifications(request));
         if (request.isUnique()) {
-            hits = StreamEx.of(hits)
-                    .distinct(EndpointHit::getIp)
-                    .toList();
+            hits = hits.stream()
+                    .filter(distinctByKey(EndpointHit::getId))
+                    .collect(Collectors.toList());
         }
         List<ViewStatsDto> viewsDtos = hitMapper.convertToDto(hits);
         for (ViewStatsDto views : viewsDtos) {
@@ -41,5 +45,10 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         }
         log.info("Получена статистика {}", viewsDtos);
         return viewsDtos;
+    }
+
+    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
