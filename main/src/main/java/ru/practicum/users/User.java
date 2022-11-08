@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.follows.Subscription;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -23,6 +26,10 @@ public class User {
     private String name;
     @Column(length = 50, unique = true)
     private String email;
+    @Column(name = "is_followed")
+    private boolean isFollowed;
+    @OneToMany(mappedBy = "subscriber")
+    private List<Subscription> subscriptions;
 
     @Override
     public String toString() {
@@ -30,6 +37,11 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", isFollowed=" + isFollowed +
+                ", followedIds=" + subscriptions
+                .stream()
+                .map(subscription -> subscription.getFollowed().getId())
+                .collect(Collectors.toList()) +
                 '}';
     }
 }
