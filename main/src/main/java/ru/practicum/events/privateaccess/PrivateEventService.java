@@ -1,5 +1,6 @@
 package ru.practicum.events.privateaccess;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.events.Event;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
@@ -29,4 +30,6 @@ public interface PrivateEventService {
     Event getEventById(Long eventId);
 
     List<Event> getEventsById(List<Long> ids);
+
+    List<Event> findAllByInitiatorId(Long initiatorId, Pageable pageable);
 }

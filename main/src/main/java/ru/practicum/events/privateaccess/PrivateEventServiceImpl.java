@@ -178,6 +178,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return eventRepository.findAllByIdIn(ids);
     }
 
+    @Override
+    public List<Event> findAllByInitiatorId(Long initiatorId, Pageable pageable) {
+        return eventRepository.findAllByInitiatorIdAndStateIs(initiatorId, EventState.PUBLISHED, pageable);
+    }
+
     private void checkUpdatedEvent(Long userId, Event event, String date) {
         checkInitiator(userId, event);
         if (event.getState() == EventState.PUBLISHED) {

@@ -50,9 +50,12 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     private Sort getSorting(String sort) {
+        if (sort == null) {
+            return Sort.unsorted();
+        }
         switch (EventSort.valueOf(sort)) {
             case EVENT_DATE:
-                return Sort.by(Sort.Direction.DESC, "eventDate");
+                return Sort.by(Sort.Direction.ASC, "eventDate");
             case VIEWS:
                 return Sort.by(Sort.Direction.DESC, "views");
             default:
