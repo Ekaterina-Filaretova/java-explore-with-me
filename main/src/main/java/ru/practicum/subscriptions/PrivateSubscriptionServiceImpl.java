@@ -1,4 +1,4 @@
-package ru.practicum.follows;
+package ru.practicum.subscriptions;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.privateaccess.PrivateEventService;
 import ru.practicum.exceptions.ObjectNotFoundException;
 import ru.practicum.exceptions.ValidationException;
-import ru.practicum.follows.dto.SubscriptionDto;
+import ru.practicum.subscriptions.dto.SubscriptionDto;
 import ru.practicum.users.AdminUserService;
 import ru.practicum.users.User;
 import ru.practicum.users.UserMapper;
@@ -40,17 +40,16 @@ public class PrivateSubscriptionServiceImpl implements PrivateSubscriptionServic
         if (userId.equals(followedId)) {
             throw new ValidationException("На самого себя подписаться невозможно");
         }
-        User subscriber = userService.getUserById(userId);
         User user = userService.getUserById(followedId);
         if (!user.isFollowed()) {
             throw new ValidationException("На данного пользователя подписаться невозможно");
         }
         Subscription subscription = new Subscription();
-        subscription.setSubscriber(subscriber);
+        subscription.setSubscriber(userService.getUserById(userId));
         subscription.setFollowed(user);
         subscription.setSubscribeDate(LocalDateTime.now());
         subscriptionRepository.save(subscription);
-        log.info("Пользователь {} подписался на {}", subscriber, user);
+        log.info("Пользователь {} подписался на {}", subscription.getSubscriber(), user);
         return subscriptionMapper.convertToDto(subscription);
     }
 

@@ -2,7 +2,7 @@ package ru.practicum.users;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.follows.SubscriptionMapper;
+import ru.practicum.subscriptions.SubscriptionMapper;
 import ru.practicum.users.dto.UserDto;
 
 import java.util.ArrayList;

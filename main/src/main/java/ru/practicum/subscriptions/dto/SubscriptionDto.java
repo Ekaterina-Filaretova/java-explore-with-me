@@ -1,4 +1,4 @@
-package ru.practicum.follows.dto;
+package ru.practicum.subscriptions.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

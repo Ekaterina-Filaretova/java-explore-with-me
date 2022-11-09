@@ -1,7 +1,7 @@
-package ru.practicum.follows;
+package ru.practicum.subscriptions;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.follows.dto.SubscriptionDto;
+import ru.practicum.subscriptions.dto.SubscriptionDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.follows.Subscription;
+import ru.practicum.subscriptions.Subscription;
 
 import javax.persistence.*;
 import java.util.List;

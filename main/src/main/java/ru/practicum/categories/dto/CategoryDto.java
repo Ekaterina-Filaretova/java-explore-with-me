@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,5 +14,7 @@ import lombok.Setter;
 public class CategoryDto {
 
     private Long id;
+    @NotEmpty(message = "Передано пустое название категории")
+    @NotEmpty(message = "Передано пустое название категории")
     private String name;
 }

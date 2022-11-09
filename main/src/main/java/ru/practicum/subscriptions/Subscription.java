@@ -1,4 +1,4 @@
-package ru.practicum.follows;
+package ru.practicum.subscriptions;
 
 import lombok.*;
 import ru.practicum.users.User;
@@ -17,13 +17,13 @@ public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subscription_id")
+    @Column(name = "subscription_id", nullable = false)
     private Long id;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "subscriber_id")
+    @ManyToOne
+    @JoinColumn(name = "subscriber_id", nullable = false)
     private User subscriber;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "followed_id")
+    @ManyToOne
+    @JoinColumn(name = "followed_id", nullable = false)
     private User followed;
     @Column(name = "subscribe_date")
     private LocalDateTime subscribeDate;

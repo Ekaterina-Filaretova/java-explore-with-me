@@ -1,7 +1,7 @@
-package ru.practicum.follows;
+package ru.practicum.subscriptions;
 
 import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.follows.dto.SubscriptionDto;
+import ru.practicum.subscriptions.dto.SubscriptionDto;
 import ru.practicum.users.dto.UserDto;
 
 import java.util.List;

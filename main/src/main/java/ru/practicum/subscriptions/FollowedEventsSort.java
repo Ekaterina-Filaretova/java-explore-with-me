@@ -1,4 +1,4 @@
-package ru.practicum.follows;
+package ru.practicum.subscriptions;
 
 public enum FollowedEventsSort {
 
